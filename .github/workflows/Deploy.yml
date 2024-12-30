@@ -1,0 +1,40 @@
+name: Node.js CI for Toge Bot v2
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout Toge Bot v2 repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js for Toge Bot v2
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies for Toge Bot v2
+        run: npm ci
+
+      - name: Run tests for Toge Bot v2
+        run: npm test
